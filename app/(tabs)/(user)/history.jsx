@@ -1,7 +1,6 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import {
-  Alert,
-  ScrollView,
+  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,21 +9,77 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import ThemedTextInput from "../../../components/ThemedTextInput";
 
-export default function history() {
+export default function History() {
   const pickupRequests = [
-    { id: "#12345", status: "Completed", points: 200 },
-    { id: "#67890", status: "Pending", points: 150 },
-    { id: "#24680", status: "Completed", points: 250 },
-    { id: "#13579", status: "Completed", points: 180 },
-    { id: "#123453", status: "Completed", points: 200 },
-    { id: "#678903", status: "Pending", points: 150 },
-    { id: "#246803", status: "Completed", points: 250 },
-    { id: "#135793", status: "Completed", points: 180 },
+    {
+      id: "12345",
+      materialType: "Plastic Bottles",
+      status: "Completed",
+      date: "Oct 25, 2025",
+    },
+    {
+      id: "67890",
+      materialType: "Cardboard Boxes",
+      status: "Pending",
+      date: "Oct 23, 2025",
+    },
+    {
+      id: "24680",
+      materialType: "Aluminum Cans",
+      status: "Completed",
+      date: "Oct 20, 2025",
+    },
+    {
+      id: "13579",
+      materialType: "Glass Bottles",
+      status: "Cancelled",
+      date: "Oct 18, 2025",
+    },
+    {
+      id: "123453",
+      materialType: "Newspapers",
+      status: "Completed",
+      date: "Oct 15, 2025",
+    },
+    {
+      id: "678903",
+      materialType: "Mixed Paper",
+      status: "Pending",
+      date: "Oct 12, 2025",
+    },
   ];
 
-  const handlePress = (id) => {
-    // Implement navigation or other logic here
-    Alert.alert(`Tapped on request ${id}`);
+  const renderItem = ({ item }) => {
+    let statusStyle;
+    if (item.status === "Completed") {
+      statusStyle = styles.completedStatus;
+    } else if (item.status === "Pending") {
+      statusStyle = styles.pendingStatus;
+    } else if (item.status === "Cancelled") {
+      statusStyle = styles.cancelledStatus;
+    }
+
+    return (
+      <TouchableOpacity
+        key={item.id}
+        style={styles.requestItem}
+        onPress={() => console.log(`Tapped on request ${item.id}`)}
+      >
+        <View style={styles.requestContent}>
+          <Text style={styles.requestTitle}>{item.materialType}</Text>
+          <Text style={styles.requestDate}>{item.date}</Text>
+        </View>
+        <View style={styles.statusBadgeContainer}>
+          <Text style={[styles.statusBadge, statusStyle]}>{item.status}</Text>
+          <AntDesign
+            name="right"
+            size={16}
+            color="#ddd"
+            style={{ marginLeft: 10 }}
+          />
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -32,7 +87,7 @@ export default function history() {
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.header}>
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            // onPress={() => navigation.goBack()}
             style={styles.leftArrow}
           >
             <Ionicons name="arrow-back" size={24} color="#ddd" />
@@ -53,67 +108,28 @@ export default function history() {
             />
           </View>
           <View style={styles.filterContainer}>
-            <TouchableOpacity style={styles.filterButton}>
-              <Text style={styles.filterText}>All</Text>
-              <AntDesign
-                name="down"
-                size={12}
-                color="#ddd"
-                style={styles.dropdownIcon}
-              />
+            <TouchableOpacity
+              style={[styles.filterButton, { backgroundColor: "#0f7f0f" }]}
+            >
+              <Text style={[styles.filterText, { color: "#ddd" }]}>All</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.filterButton}>
               <Text style={styles.filterText}>Completed</Text>
-              <AntDesign
-                name="down"
-                size={12}
-                color="#ddd"
-                style={styles.dropdownIcon}
-              />
             </TouchableOpacity>
             <TouchableOpacity style={styles.filterButton}>
               <Text style={styles.filterText}>Pending</Text>
-              <AntDesign
-                name="down"
-                size={12}
-                color="#ddd"
-                style={styles.dropdownIcon}
-              />
             </TouchableOpacity>
           </View>
         </View>
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={styles.scrollContent}
-        >
-          <View style={styles.listContainer}>
-            {pickupRequests.map((request) => (
-              <TouchableOpacity
-                key={request.id}
-                style={styles.requestItem}
-                onPress={() => handlePress(request.id)}
-              >
-                <View>
-                  <Text style={styles.requestTitle}>
-                    Pickup Request {request.id}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.requestStatus,
-                      request.status === "Completed"
-                        ? styles.completedStatus
-                        : styles.pendingStatus,
-                    ]}
-                  >
-                    {request.status} · {request.points} points
-                  </Text>
-                </View>
-                <AntDesign name="right" size={20} color="#ddd" />
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
+        <View style={styles.listContainer}>
+          <FlatList
+            data={pickupRequests}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
       </SafeAreaView>
     </View>
   );
@@ -141,7 +157,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 10,
   },
-
   searchContainer: {
     position: "relative",
     justifyContent: "center",
@@ -164,13 +179,15 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     gap: 10,
     marginBottom: 10,
   },
   filterButton: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
@@ -180,17 +197,10 @@ const styles = StyleSheet.create({
   filterText: {
     color: "#ddd",
     fontSize: 14,
-    marginRight: 5,
-  },
-  dropdownIcon: {
-    opacity: 0.8,
-  },
-  scrollContent: {
-    flex: 1,
-    paddingHorizontal: 20,
   },
   listContainer: {
-    // This container holds the list items
+    flex: 1,
+    paddingHorizontal: 20,
   },
   requestItem: {
     flexDirection: "row",
@@ -200,19 +210,38 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#333",
   },
+  requestContent: {
+    flexDirection: "column",
+  },
   requestTitle: {
     color: "#ddd",
     fontSize: 16,
     fontWeight: "bold",
   },
-  requestStatus: {
+  requestDate: {
     fontSize: 14,
     marginTop: 2,
+    color: "#888",
+  },
+  statusBadgeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  statusBadge: {
+    fontSize: 12,
+    fontWeight: "bold",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    color: "#04432c",
   },
   completedStatus: {
-    color: "#0f7f0f", // Green color for completed status
+    backgroundColor: "#0f7f0f",
   },
   pendingStatus: {
-    color: "#ffd700", // Yellow/gold color for pending status
+    backgroundColor: "#ffd700",
+  },
+  cancelledStatus: {
+    backgroundColor: "#ff4d4d",
   },
 });

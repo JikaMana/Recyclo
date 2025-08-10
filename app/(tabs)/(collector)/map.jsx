@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function map() {
@@ -11,30 +11,31 @@ export default function map() {
   return (
     <View style={{ flex: 1, backgroundColor: "#04432c" }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-        <View style={styles.mainContainer}>
-          <View>
-            <MapView
-              style={styles.map}
-              initialRegion={{
-                latitude: 9.056,
-                longitude: 7.495,
-                latitudeDelta: 0.05,
-                longitudeDelta: 0.05,
-              }}
-            >
-              {pendingPickups.map((pickup) => (
-                <Marker
-                  key={pickup.id}
-                  coordinate={{
-                    latitude: pickup.lat,
-                    longitude: pickup.lng,
-                  }}
-                  title={pickup.title}
-                  description="Pending pickup location"
-                />
-              ))}
-            </MapView>
-          </View>
+        <View style={{ flex: 1 }}>
+          <MapView
+            style={styles.map}
+            provider={PROVIDER_GOOGLE}
+            initialRegion={{
+              latitude: 9.056,
+              longitude: 7.495,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            }}
+            showsUserLocation
+            showsMyLocationButton
+          >
+            {pendingPickups.map((pickup) => (
+              <Marker
+                key={pickup.id}
+                coordinate={{
+                  latitude: pickup.lat,
+                  longitude: pickup.lng,
+                }}
+                title={pickup.title}
+                description="Pending pickup location"
+              />
+            ))}
+          </MapView>
         </View>
       </SafeAreaView>
     </View>
@@ -42,10 +43,9 @@ export default function map() {
 }
 
 const styles = StyleSheet.create({
-  map: { flex: 1 },
+  map: { flex: 1, width: "100%", height: "100%" },
   mainContainer: {
     paddingHorizontal: 20,
     marginTop: 10,
-    flex: 1,
   },
 });

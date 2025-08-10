@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.abdullahimana.Recyclo"
+      "bundleIdentifier": "com.abdullahimana.Recyclo",
+      "config": {
+        "googleMapsApiKey": "AIzaSyCFC-dUTsU-b-6HOaKU94WPu85uVfVPLNM"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +21,10 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.abdullahimana.Recyclo"
+      "package": "com.abdullahimana.Recyclo",
+      "googleMaps": {
+        "apiKey": "AIzaSyD5zZrFZ2lmOs_ufMI_e6ZNM9xpAvuVkHE"
+      }
     },
     "web": {
       "bundler": "metro",

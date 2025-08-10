@@ -58,7 +58,7 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
-        name="collectorProfile"
+        name="(profile)"
         options={{
           title: "Profile",
           tabBarIcon: ({ focused, color }) => (

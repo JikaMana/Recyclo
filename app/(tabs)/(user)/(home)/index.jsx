@@ -102,7 +102,7 @@ export default function Home() {
                   </Text>
                   <TouchableOpacity
                     style={styles.button}
-                    onPress={() => router.push("/learn")}
+                    onPress={() => router.push("/(tabs)/(user)/(home)/learn")}
                   >
                     <Text style={styles.buttonText}>Learn More</Text>
                   </TouchableOpacity>

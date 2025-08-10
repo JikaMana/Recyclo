@@ -52,7 +52,7 @@ export default function Pickup() {
               </Text>
               <TouchableOpacity
                 style={styles.mapButton}
-                onPress={() => router.push("/learn")}
+                onPress={() => router.push("/map-select")}
               >
                 <Text style={styles.mapButtonText}>Select on Map</Text>
               </TouchableOpacity>

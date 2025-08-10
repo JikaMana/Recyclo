@@ -4,7 +4,9 @@ import { useEffect } from "react";
 function RouteGuard({ children }) {
   const router = useRouter();
   const isAuth = true; //leave you in auth groups
-  const role = "collector"; // later get from auth
+  // later get from auth
+  const role = "collector";
+  // const role = "user";
 
   useEffect(() => {
     if (isAuth) {

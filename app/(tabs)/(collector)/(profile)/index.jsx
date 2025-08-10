@@ -9,7 +9,7 @@
 // } from "react-native";
 // import { SafeAreaView } from "react-native-safe-area-context";
 
-// export default function profile() {
+// export default function CollectorProfile() {
 //   const activities = [
 //     {
 //       id: "1",
@@ -108,10 +108,10 @@
 //                 marginTop: 10,
 //               }}
 //             >
-//               Jika Mana
+//               Trans Amadi Center
 //             </Text>
 //             <Text style={{ fontSize: 14, marginTop: 2, color: "#0f7f0f" }}>
-//               12,500 points
+//               350,500 points
 //             </Text>
 //             <Text style={{ fontSize: 14, lineHeight: 14, color: "#0f7f0f" }}>
 //               Member since 2025
@@ -240,9 +240,9 @@
 // });
 
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import {
-  FlatList,
-  Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -250,100 +250,82 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function UserProfile() {
-  const profileOptions = [
-    {
-      id: "1",
-      title: "Edit Profile",
-      icon: "person-outline",
-      action: () => console.log("Navigate to Edit Profile"),
-    },
-    {
-      id: "2",
-      title: "Notifications",
-      icon: "notifications-outline",
-      action: () => console.log("Navigate to Notifications"),
-    },
-    {
-      id: "3",
-      title: "Change Password",
-      icon: "lock-closed-outline",
-      action: () => console.log("Navigate to Change Password"),
-    },
-    {
-      id: "4",
-      title: "Help & Support",
-      icon: "help-circle-outline",
-      action: () => console.log("Navigate to Help & Support"),
-    },
-    {
-      id: "5",
-      title: "Privacy Policy",
-      icon: "document-text-outline",
-      action: () => console.log("Navigate to Privacy Policy"),
-    },
-    {
-      id: "6",
-      title: "Log Out",
-      icon: "log-out-outline",
-      action: () => console.log("Handle Log Out"),
-    },
-  ];
+export default function CollectorProfile() {
+  const router = useRouter();
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={item.action} style={styles.optionItem}>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Ionicons name={item.icon} size={24} color="#ddd" />
-        <Text style={styles.optionTitle}>{item.title}</Text>
-      </View>
-      <Ionicons name="chevron-forward-outline" size={24} color="#888" />
-    </TouchableOpacity>
-  );
+  const subscriptionDetails = {
+    plan: "Monthly",
+    status: "Active",
+    expires: "10th Aug 2025",
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "#04432c" }}>
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <View style={styles.header}>
-          <TouchableOpacity
-            // onPress={() => navigation.goBack()}
-            style={styles.leftArrow}
-          >
-            <Ionicons name="arrow-back" size={24} color="#ddd" />
+          <TouchableOpacity style={styles.menuIcon}>
+            <Ionicons name="menu" size={24} color="#ddd" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>My Profile</Text>
         </View>
         <View style={styles.mainContainer}>
-          <FlatList
-            data={profileOptions}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-            showsVerticalScrollIndicator={false}
-            ListHeaderComponent={() => (
-              <View style={{ alignItems: "center", marginBottom: 20 }}>
-                <View style={styles.profilePhotoContainer}>
-                  <Image
-                    source={require("../../../assets/images/icon.png")}
-                    style={styles.profilePhoto}
-                  />
-                </View>
-                <Text
-                  style={{
-                    fontSize: 22,
-                    fontWeight: "bold",
-                    lineHeight: 28,
-                    color: "#ddd",
-                    marginTop: 10,
-                  }}
-                >
-                  Jika Mana
-                </Text>
-                <Text style={{ fontSize: 14, color: "#0f7f0f", marginTop: 4 }}>
-                  User
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={{ alignItems: "center", marginTop: 20 }}>
+              <View style={styles.profilePhotoContainer}>
+                <Ionicons name="person-circle" size={100} color="#ddd" />
+              </View>
+              <Text
+                style={{
+                  fontSize: 22,
+                  fontWeight: "bold",
+                  lineHeight: 28,
+                  color: "#ddd",
+                  marginTop: 10,
+                }}
+              >
+                Jika Mana
+              </Text>
+              <Text style={{ fontSize: 14, marginTop: 2, color: "#0f7f0f" }}>
+                Collector ID: 12345
+              </Text>
+            </View>
+
+            <Text style={styles.subHeaderText}>Subscription Details</Text>
+            <View style={styles.detailsContent}>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailTitle}>Plan</Text>
+                <Text style={styles.detailValue}>
+                  {subscriptionDetails.plan}
                 </Text>
               </View>
-            )}
-          />
+              <View style={styles.detailRow}>
+                <Text style={styles.detailTitle}>Status</Text>
+                <Text style={[styles.detailValue, { color: "#0f7f0f" }]}>
+                  {subscriptionDetails.status}
+                </Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailTitle}>Expires On</Text>
+                <Text style={styles.detailValue}>
+                  {subscriptionDetails.expires}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#0f7f0f",
+                  paddingHorizontal: 20,
+                  borderRadius: 50,
+                  alignItems: "center",
+                  paddingVertical: 16,
+                  width: "100%",
+                  marginTop: 20,
+                }}
+                onPress={() => router.push("/subscription")}
+              >
+                <Text style={styles.paymentButtonText}>Proceed to Payment</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </View>
       </SafeAreaView>
     </View>
@@ -364,39 +346,63 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  leftArrow: {
+  menuIcon: {
     position: "absolute",
     left: 20,
   },
   mainContainer: {
-    flex: 1,
     paddingHorizontal: 20,
     marginTop: 10,
+    flex: 1,
   },
   profilePhotoContainer: {
     borderWidth: 1,
     borderRadius: 50,
     borderColor: "#ddd",
   },
-  profilePhoto: {
-    width: 100,
-    height: 100,
-    resizeMode: "contain",
+  detailsContent: {
+    backgroundColor: "#ddd",
+    borderRadius: 8,
+    padding: 16,
   },
-  optionItem: {
+  subHeaderText: {
+    color: "#ddd",
+    lineHeight: 23,
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  detailRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 15,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
-  optionTitle: {
+  detailTitle: {
+    fontSize: 16,
+    color: "#333",
+  },
+  detailValue: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#ddd",
-    marginLeft: 15,
+    color: "#333",
   },
-  separator: {
-    height: 1,
-    backgroundColor: "#333",
+  actionBtn: {
+    backgroundColor: "#0f7f0f",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  actionBtnText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  paymentButtonText: {
+    color: "#ddd",
+    fontWeight: "600",
+    fontSize: 14,
   },
 });

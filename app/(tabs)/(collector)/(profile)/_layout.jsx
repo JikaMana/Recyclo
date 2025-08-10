@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function HomeLayout() {
+export default function SubscriptionLayout() {
   return (
     <Stack>
       <Stack.Screen
@@ -10,14 +10,7 @@ export default function HomeLayout() {
         }}
       />
       <Stack.Screen
-        name="notification"
-        options={{
-          presentation: "modal",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="learn"
+        name="subscription"
         options={{
           presentation: "modal",
           headerShown: false,
