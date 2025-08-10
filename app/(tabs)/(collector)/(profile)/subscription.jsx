@@ -32,7 +32,7 @@ const subscriptionPlans = [
   },
 ];
 
-export default function subscription() {
+export default function Subscription() {
   const router = useRouter();
   const [selectedPlan, setSelectedPlan] = useState(subscriptionPlans[0]);
 

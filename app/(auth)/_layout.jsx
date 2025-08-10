@@ -1,12 +1,11 @@
 import { Stack, useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function RouteGuard({ children }) {
   const router = useRouter();
   const isAuth = true; //leave you in auth groups
   // later get from auth
-  const role = "collector";
-  // const role = "user";
+  const [role, setRole] = useState("user"); //collector
 
   useEffect(() => {
     if (isAuth) {

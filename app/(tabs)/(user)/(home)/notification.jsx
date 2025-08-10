@@ -14,7 +14,6 @@ export default function NotificationsPage() {
   const navigation = useNavigation();
 
   const notifications = [
-    // Today's notifications
     {
       id: "1",
       section: "Today",
@@ -34,7 +33,6 @@ export default function NotificationsPage() {
         "Earn 500 points for every 1kg of sorted waste you recycle this month.",
     },
 
-    // Yesterday's notifications
     {
       id: "3",
       section: "Yesterday",

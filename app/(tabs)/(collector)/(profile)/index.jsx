@@ -256,7 +256,8 @@ export default function CollectorProfile() {
   const subscriptionDetails = {
     plan: "Monthly",
     status: "Active",
-    expires: "10th Aug 2025",
+    activated: "10th Aug 2025",
+    expires: "10th Oct 2025",
   };
 
   return (
@@ -286,7 +287,7 @@ export default function CollectorProfile() {
                 Jika Mana
               </Text>
               <Text style={{ fontSize: 14, marginTop: 2, color: "#0f7f0f" }}>
-                Collector ID: 12345
+                Collector ID: 08-G2H4V-2025
               </Text>
             </View>
 
@@ -305,8 +306,14 @@ export default function CollectorProfile() {
                 </Text>
               </View>
               <View style={styles.detailRow}>
-                <Text style={styles.detailTitle}>Expires On</Text>
+                <Text style={styles.detailTitle}>Activated On</Text>
                 <Text style={styles.detailValue}>
+                  {subscriptionDetails.activated}
+                </Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailTitle}>Expires On</Text>
+                <Text style={[styles.detailValue, { color: "red" }]}>
                   {subscriptionDetails.expires}
                 </Text>
               </View>
