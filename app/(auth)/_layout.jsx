@@ -5,7 +5,7 @@ function RouteGuard({ children }) {
   const router = useRouter();
   const isAuth = true; //leave you in auth groups
   // later get from auth
-  const [role, setRole] = useState("user"); //collector
+  const [role, setRole] = useState("collector"); //user
 
   useEffect(() => {
     if (isAuth) {

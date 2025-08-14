@@ -39,7 +39,7 @@ export default function Pickup() {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Pickup Request</Text>
           <TouchableOpacity
-            // onPress={() => navigation.goBack()}
+            onPress={() => router.replace("/map")}
             style={styles.mapIcon}
           >
             <Ionicons name="map-outline" size={24} color="#ddd" />

@@ -1,50 +1,146 @@
-# Welcome to your Expo app 👋
+# Recyclo
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Recyclo is a mobile application built with React Native and Expo, designed to promote recycling by allowing users to schedule pickups, earn points, and access recycling resources. The app supports two main user roles: **User** and **Collector**.
 
-## Get started
+---
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+### For Users
 
-2. Start the app
+- **Register/Login:** Create an account or sign in.
+- **Schedule Pickup:** Request recyclable waste pickups by selecting material type, location, and uploading photos.
+- **Pickup History:** View past and pending pickup requests with status tracking.
+- **Profile Management:** Edit profile, view notifications, change password, and log out.
+- **Learn & Earn:** Access educational content on proper recycling and sorting.
+- **Notifications:** Receive updates about pickups, offers, and app news.
 
-   ```bash
-   npx expo start
-   ```
+### For Collectors
 
-In the output, you'll find options to open the app in a
+- **Dashboard:** View key metrics (total, pending, completed pickups) and recent activities.
+- **Pickup Requests:** Browse and manage incoming pickup requests, view details, and accept/reject requests.
+- **Map View:** See pending pickups on a map.
+- **Profile & Subscription:** View collector profile, manage subscription plans, and renew via payment.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Project Structure
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+app/
+  (auth)/           # Authentication screens (login, register)
+  (tabs)/           # Main tab navigation for users and collectors
+    (user)/         # User-specific screens (home, pickup, history, profile)
+      (home)/       # User home, notifications, learn & earn
+    (collector)/    # Collector-specific screens (dashboard, pickup, map, profile)
+      (pickup)/     # Collector pickup requests and details
+      (profile)/    # Collector profile and subscription
+components/         # Reusable UI components
+contexts/           # React contexts (e.g., AuthContext)
+assets/             # Images and fonts
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## Getting Started
 
-To learn more about developing your project with Expo, look at the following resources:
+### Prerequisites
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- [Node.js](https://nodejs.org/)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+- [Yarn](https://classic.yarnpkg.com/) or [npm](https://www.npmjs.com/)
 
-## Join the community
+### Installation
 
-Join our community of developers creating universal apps.
+1. **Clone the repository:**
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+   ```sh
+   git clone <your-repo-url>
+   cd Recyclo
+   ```
+
+2. **Install dependencies:**
+
+   ```sh
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Start the development server:**
+
+   ```sh
+   npm start
+   # or
+   yarn start
+   ```
+
+4. **Run on device or emulator:**
+   - Use the Expo Go app on your phone, or an Android/iOS emulator.
+
+---
+
+## Scripts
+
+- `npm start` — Start the Expo development server.
+- `npm run android` — Run on Android device/emulator.
+- `npm run ios` — Run on iOS simulator.
+- `npm run web` — Run in web browser.
+- `npm run lint` — Run ESLint.
+
+---
+
+## Configuration
+
+- **API Keys:** Place your Google Maps API keys in the `.env` file (see `.env.example`).
+- **Environment Variables:** See `.env` for configuration.
+
+---
+
+## Dependencies
+
+- React Native, Expo
+- Expo Router
+- React Navigation
+- @expo/vector-icons
+- react-native-maps
+- And more (see [package.json](package.json))
+
+---
+
+## Folder Reference
+
+- [app/(auth)/register.jsx](<app/(auth)/register.jsx>) — Registration screen
+- [app/(auth)/login.jsx](<app/(auth)/login.jsx>) — Login screen
+- [app/(tabs)/(user)/(home)/index.jsx](<app/(tabs)/(user)/(home)/index.jsx>) — User home
+- [app/(tabs)/(user)/pickup.jsx](<app/(tabs)/(user)/pickup.jsx>) — Schedule pickup
+- [app/(tabs)/(user)/history.jsx](<app/(tabs)/(user)/history.jsx>) — Pickup history
+- [app/(tabs)/(user)/profile.jsx](<app/(tabs)/(user)/profile.jsx>) — User profile
+- [app/(tabs)/(user)/(home)/notification.jsx](<app/(tabs)/(user)/(home)/notification.jsx>) — Notifications
+- [app/(tabs)/(user)/(home)/learn.jsx](<app/(tabs)/(user)/(home)/learn.jsx>) — Learn & Earn
+- [app/(tabs)/(collector)/dashboard.jsx](<app/(tabs)/(collector)/dashboard.jsx>) — Collector dashboard
+- [app/(tabs)/(collector)/(pickup)/index.jsx](<app/(tabs)/(collector)/(pickup)/index.jsx>) — Collector pickup requests
+- [app/(tabs)/(collector)/(pickup)/request.jsx](<app/(tabs)/(collector)/(pickup)/request.jsx>) — Pickup request details
+- [app/(tabs)/(collector)/map.jsx](<app/(tabs)/(collector)/map.jsx>) — Map view for collectors
+- [app/(tabs)/(collector)/(profile)/index.jsx](<app/(tabs)/(collector)/(profile)/index.jsx>) — Collector profile
+- [app/(tabs)/(collector)/(profile)/subscription.jsx](<app/(tabs)/(collector)/(profile)/subscription.jsx>) — Subscription management
+
+---
+
+## Customization
+
+- **Theming:** Colors and styles are defined in each component’s `StyleSheet`.
+- **Navigation:** Uses Expo Router for file-based navigation.
+- **Icons:** Uses [@expo/vector-icons](https://docs.expo.dev/guides/icons/).
+
+---
+
+## License
+
+MIT
+
+---
+
+## Author
+
+Jika Mana
