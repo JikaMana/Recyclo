@@ -127,19 +127,32 @@ export default function UserProfile() {
 
   if (isLoading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" />
+      <View style={styles.centered}>
+        <ActivityIndicator
+          size="large"
+          color="#1e90ff"
+        />
+        <Text style={styles.loadingText}>Loading your profile...</Text>
       </View>
     );
   }
 
   if (!user) {
     return (
-      <View style={[styles.container]}>
-        <Text>Error fetching profile. Please log in again.</Text>
+      <View style={styles.centered}>
+        <Text style={styles.errorTitle}>Could not load your profile</Text>
+        <Text style={styles.errorMessage}>
+          Please log in again to continue.
+        </Text>
+        <TouchableOpacity
+          onPress={logout}
+          style={styles.retryButton}>
+          <Text style={styles.retryText}>Log in again</Text>
+        </TouchableOpacity>
       </View>
     );
   }
+
   return (
     <View style={{ flex: 1, backgroundColor: '#04432c' }}>
       <SafeAreaView
@@ -242,5 +255,38 @@ const styles = StyleSheet.create({
   separator: {
     height: 1,
     backgroundColor: '#333',
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#555',
+  },
+  errorTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#222',
+    marginBottom: 4,
+  },
+  errorMessage: {
+    color: '#777',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#1e90ff',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  retryText: {
+    color: '#fff',
+    fontWeight: '600',
   },
 });

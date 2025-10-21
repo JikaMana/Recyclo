@@ -1,302 +1,272 @@
-import { FontAwesome6 } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import React, { useState, useEffect } from 'react';
 import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 
-export default function Home() {
+const HomeScreen = () => {
+  const [userName, setUserName] = useState('');
   const router = useRouter();
 
-  // sample placeholders (replace with API data later)
-  const centers = [
-    {
-      id: '1',
-      name: 'Amadi Recycling Centre - Kuje',
-      hours: 'Open 8AM - 5PM',
-      image: require('../../../../assets/images/collectors/kuje-collector.png'),
-    },
-    {
-      id: '2',
-      name: 'Oyigbo Recycling Centre',
-      hours: 'Open 9AM - 5PM',
-      image: require('../../../../assets/images/collectors/gwagwalada-collector.png'),
-    },
-  ];
-
-  const recent = [
-    {
-      id: 'r1',
-      title: 'Pickup Scheduled',
-      subtitle: 'Today, 2PM - 4PM',
-      icon: 'truck',
-    },
-  ];
+  useEffect(() => {
+    const fetchUser = async () => {
+      const storedName = await AsyncStorage.getItem('userName');
+      if (storedName) setUserName(storedName);
+    };
+    fetchUser();
+  }, []);
 
   return (
-    <View style={styles.page}>
-      <SafeAreaView
-        style={{ flex: 1 }}
-        edges={['top', 'left', 'right']}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.greeting}>Hello, Jika</Text>
-            <Text style={styles.subtitle}>Save waste • Earn rewards</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: 30 }}
+      showsVerticalScrollIndicator={false}>
+      {/* Header */}
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.greeting}>
+            Hello, {userName || 'Recycler'} 👋
+          </Text>
+          <Text style={styles.subtitle}>Welcome back to Recyclo</Text>
+        </View>
+        <TouchableOpacity style={styles.avatarWrapper}>
+          <Ionicons
+            name="notifications-outline"
+            size={24}
+            color="#F8F8F5"
+          />
+        </TouchableOpacity>
+      </View>
+
+      {/* Center Info */}
+      <View style={styles.centerCard}>
+        <Image
+          source={require('../../../../assets/images/collectors/kuje-collector.png')}
+          style={styles.centerImage}
+        />
+        <View style={styles.centerInfo}>
+          <Text style={styles.centerName}>Envirocycling Plastic Centre</Text>
+          <Text style={styles.centerDetails}>
+            Oyigbo, Abuja • Open 8AM - 5PM
+          </Text>
+        </View>
+      </View>
+
+      {/* Points / Pickup */}
+      <View style={styles.sectionRow}>
+        <TouchableOpacity style={styles.pointsCard}>
+          <Ionicons
+            name="wallet-outline"
+            size={32}
+            color="#2b9646aa"
+          />
+          <Text style={styles.pointsText}>2450 pts</Text>
+          <Text style={styles.pointsSub}>Your Balance</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.pickupCard, { justifyContent: 'center' }]}
+          onPress={() => router.push('/pickup')}>
+          <Ionicons
+            name="bicycle-outline"
+            size={32}
+            color="#F8F8F5"
+          />
+          <Text style={styles.pickupText}>Schedule Pickup</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Learn & Earn */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Learn & Earn</Text>
+        <TouchableOpacity
+          style={styles.learnCard}
+          onPress={() => router.push('/learn')}>
+          <Image
+            source={require('../../../../assets/images/learn-how-to-sort.png')}
+            style={styles.learnImage}
+          />
+          <View style={styles.learnInfo}>
+            <Text style={styles.learnTitle}>Sorting Plastic Right</Text>
+            <Text style={styles.learnSubtitle}>
+              Learn how to maximize your recycling rewards.
+            </Text>
           </View>
-          <View style={styles.headerRight}>
-            <TouchableOpacity
-              onPress={() => router.push('/(tabs)/(user)/(home)/notification')}
-              style={styles.iconButton}>
-              <FontAwesome6
-                name="bell"
-                size={20}
-                color="#ddd"
-              />
-            </TouchableOpacity>
-            <Image
-              source={require('../../../../assets/images/icon.jpg')}
-              style={styles.avatar}
-            />
+        </TouchableOpacity>
+      </View>
+
+      {/* Recent Activity */}
+      <View style={[styles.section, { marginBottom: 20 }]}>
+        <Text style={styles.sectionTitle}>Recent Activity</Text>
+        <View style={styles.activityCard}>
+          <Ionicons
+            name="refresh-circle-outline"
+            size={24}
+            color="#2b9646aa"
+          />
+          <View style={{ marginLeft: 10 }}>
+            <Text style={styles.activityTitle}>Pickup Completed</Text>
+            <Text style={styles.activityTime}>Yesterday • 2:35 PM</Text>
           </View>
         </View>
-
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}>
-          {/* Points & Schedule */}
-          <View style={styles.topRow}>
-            <View style={styles.pointsCard}>
-              <Text style={styles.pointsLabel}>Trash for Cash</Text>
-              <Text style={styles.pointsValue}>12,500 pts</Text>
-              <Text style={styles.pointsSub}>₦1,250 available</Text>
-            </View>
-
-            <View style={styles.scheduleCard}>
-              <Text style={styles.scheduleTitle}>Schedule a Pickup</Text>
-              <Text style={styles.scheduleSub}>We pick from your door</Text>
-              <TouchableOpacity
-                style={styles.primaryButton}
-                onPress={() => router.push('/pickup')}>
-                <Text style={styles.primaryButtonText}>Schedule</Text>
-              </TouchableOpacity>
-            </View>
+        <View style={styles.activityCard}>
+          <Ionicons
+            name="gift-outline"
+            size={24}
+            color="#FFD166"
+          />
+          <View style={{ marginLeft: 10 }}>
+            <Text style={styles.activityTitle}>Points Redeemed</Text>
+            <Text style={styles.activityTime}>3 days ago</Text>
           </View>
-          {/* Collectors / Centers */}
-          <View
-            style={{
-              marginTop: 10,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginBottom: 10,
-            }}>
-            <Text style={styles.sectionTitle}>Nearby Centers</Text>
-            <TouchableOpacity
-              onPress={() => router.push('/(tabs)/(user)/(home)/centers')}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={styles.allCentersButton}>All Centers</Text>
-                <FontAwesome6
-                  name="arrow-right"
-                  size={14}
-                  color="#0f7f0f"
-                  style={{ marginLeft: 6 }}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.grid}>
-            {centers.map((c) => (
-              <TouchableOpacity
-                key={c.id}
-                style={styles.centerCard}
-                onPress={() => router.push('/(tabs)/(user)/center-details')}>
-                <Image
-                  source={c.image}
-                  style={styles.centerImage}
-                />
-                <View style={styles.centerInfo}>
-                  <Text
-                    numberOfLines={2}
-                    style={styles.centerName}>
-                    {c.name}
-                  </Text>
-                  <Text style={styles.centerHours}>{c.hours}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-          {/* Learn & Earn */}
-          <Text style={styles.sectionTitle}>Learn & Earn</Text>
-          <TouchableOpacity
-            style={styles.learnCard}
-            onPress={() => router.push('/(tabs)/(user)/(home)/learn')}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.learnTitle}>How to sort recyclables</Text>
-              <Text style={styles.learnSub}>
-                Simple tips to increase your earnings and reduce contamination.
-              </Text>
-
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={styles.allCentersButton}>Learn more</Text>
-                <FontAwesome6
-                  name="arrow-right"
-                  size={14}
-                  color="#0f7f0f"
-                  style={{ marginLeft: 6 }}
-                />
-              </View>
-            </View>
-            <Image
-              source={require('../../../../assets/images/learn-how-to-sort.png')}
-              style={styles.learnImage}
-            />
-          </TouchableOpacity>
-          {/* Recent Activities */}
-          <Text style={styles.sectionTitle}>Recent Activity</Text>
-          <View style={styles.activityList}>
-            {recent.map((a) => (
-              <View
-                key={a.id}
-                style={styles.activityRow}>
-                <View style={styles.activityIcon}>
-                  <FontAwesome6
-                    name={a.icon}
-                    size={20}
-                    color="#04432c"
-                  />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.activityTitle}>{a.title}</Text>
-                  <Text style={styles.activitySubtitle}>{a.subtitle}</Text>
-                </View>
-                <Text style={styles.activityStatus}>Scheduled</Text>
-              </View>
-            ))}
-          </View>
-          <View style={{ height: 40 }} />
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+        </View>
+      </View>
+    </ScrollView>
   );
-}
+};
+
+export default HomeScreen;
 
 const styles = StyleSheet.create({
-  page: { flex: 1, backgroundColor: '#04432c' },
+  container: {
+    flex: 1,
+    backgroundColor: '#04432c',
+    paddingHorizontal: 20,
+    paddingTop: 50,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 16,
   },
-  greeting: { color: '#fff', fontSize: 18, fontWeight: '700' },
-  subtitle: { color: '#ddd', fontSize: 12, marginTop: 2 },
-  headerRight: { flexDirection: 'row', alignItems: 'center' },
-  iconButton: { padding: 8, marginRight: 10 },
-  avatar: { width: 38, height: 38, borderRadius: 10 },
-  scrollContent: { paddingHorizontal: 20, paddingBottom: 20 },
-  topRow: { flexDirection: 'row', gap: 12, marginBottom: 20 },
-  pointsCard: {
-    flex: 1,
-    backgroundColor: '#072e21',
-    borderTopLeftRadius: 12,
-    borderBottomLeftRadius: 12,
-    borderTopRightRadius: 6,
-    borderBottomRightRadius: 6,
-    padding: 12,
-    justifyContent: 'center',
+  greeting: {
+    color: '#F8F8F5',
+    fontSize: 20,
+    fontWeight: '600',
   },
-  pointsLabel: { color: '#9fd7b3', fontSize: 12 },
-  pointsValue: { color: '#fff', fontSize: 18, fontWeight: '700', marginTop: 6 },
-  pointsSub: { color: '#9fd7b3', fontSize: 12, marginTop: 4 },
-
-  scheduleCard: {
-    width: 150,
-    backgroundColor: '#072e21',
-    borderTopLeftRadius: 6,
-    borderBottomLeftRadius: 6,
-    borderTopRightRadius: 12,
-    borderBottomRightRadius: 12,
-    padding: 12,
-    justifyContent: 'space-between',
+  subtitle: {
+    color: '#C4DAD2',
+    fontSize: 14,
+    marginTop: 2,
   },
-  scheduleTitle: { color: '#fff', fontWeight: '700', fontSize: 14 },
-  scheduleSub: { color: '#9fd7b3', fontSize: 12, marginBottom: 10 },
-
-  primaryButton: {
-    backgroundColor: '#0f7f0f',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  primaryButtonText: { color: '#fff', fontWeight: '700' },
-
-  sectionTitle: {
-    color: '#ddd',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 12,
+  avatarWrapper: {
+    backgroundColor: '#2b9646aa',
+    padding: 8,
+    borderRadius: 50,
   },
   centerCard: {
-    width: '48%',
-    backgroundColor: '#062a22',
-    borderRadius: 4,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-
+    backgroundColor: '#F8F8F5',
+    borderRadius: 16,
+    marginTop: 25,
     overflow: 'hidden',
-    marginBottom: 12,
   },
-  centerImage: { width: '100%', height: 100, resizeMode: 'cover' },
-  centerInfo: { padding: 8 },
-  centerName: { color: '#fff', fontWeight: '700', fontSize: 13 },
-  centerHours: { color: '#9fd7b3', fontSize: 12, marginTop: 4 },
-
+  centerImage: {
+    width: '100%',
+    height: 140,
+  },
+  centerInfo: {
+    padding: 15,
+  },
+  centerName: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  centerDetails: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 4,
+  },
+  sectionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 25,
+  },
+  pointsCard: {
+    backgroundColor: '#F8F8F5',
+    borderRadius: 16,
+    padding: 15,
+    flex: 1,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  pointsText: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#111827',
+    marginTop: 5,
+  },
+  pointsSub: {
+    color: '#6B7280',
+    fontSize: 12,
+  },
+  pickupCard: {
+    backgroundColor: '#2b9646aa',
+    borderRadius: 16,
+    padding: 15,
+    flex: 1,
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  pickupText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#F8F8F5',
+    marginTop: 5,
+  },
+  section: {
+    marginTop: 30,
+  },
+  sectionTitle: {
+    color: '#F8F8F5',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 15,
+  },
   learnCard: {
-    backgroundColor: '#062a22',
-    borderRadius: 6,
+    backgroundColor: '#e8e8e4ff',
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  learnImage: {
+    width: '100%',
+    height: 120,
+  },
+  learnInfo: {
+    padding: 15,
+  },
+  learnTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  learnSubtitle: {
+    color: '#6B7280',
+    fontSize: 13,
+    marginTop: 5,
+  },
+  activityCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8F8F5',
+    borderRadius: 12,
     padding: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 10,
   },
-  learnTitle: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  learnSub: { color: '#ddd', fontSize: 12, marginTop: 6, marginBottom: 6 },
-  learnAction: { color: '#0f7f0f', fontWeight: '700' },
-  learnImage: { width: 90, height: 70, borderRadius: 8, marginLeft: 12 },
-
-  activityList: { marginBottom: 16 },
-  activityRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomColor: 'rgba(255,255,255,0.04)',
-    borderBottomWidth: 1,
-    paddingBottom: 8,
+  activityTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#111827',
   },
-  activityIcon: {
-    width: 48,
-    height: 48,
-    backgroundColor: '#ddd',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
+  activityTime: {
+    color: '#6B7280',
+    fontSize: 12,
   },
-  activityTitle: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  activitySubtitle: { color: '#ddd', fontSize: 12, marginTop: 2 },
-  activityStatus: { color: '#9fd7b3', fontSize: 12, fontWeight: '700' },
-  allCentersButton: { color: '#0f7f0f', fontWeight: '700' },
 });

@@ -1,5 +1,5 @@
 import {
-  AntDesign,
+  FontAwesome5,
   FontAwesome6,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
@@ -48,10 +48,10 @@ export default function AppLayout() {
         options={{
           title: 'Map',
           tabBarIcon: ({ focused, color }) => (
-            <AntDesign
-              size={24}
+            <FontAwesome5
+              name="map-marked-alt"
+              size={22}
               color={focused ? color : '#fff'}
-              name="enviromento"
             />
           ),
         }}

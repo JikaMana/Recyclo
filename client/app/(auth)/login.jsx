@@ -21,8 +21,6 @@ export default function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  console.log(BASE_URL + 'a');
-
   const handleLogin = async () => {
     try {
       const response = await fetch(`${BASE_URL}/api/auth/login`, {
@@ -35,6 +33,8 @@ export default function Login() {
 
       console.log('Response Status:', response.status);
 
+      // const text = await response.text();
+      // console.log(text); // checks what I'm getting
       const data = await response.json();
 
       if (response.ok) {
@@ -49,7 +49,9 @@ export default function Login() {
           token: data.token,
         });
       } else {
-        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+        return response.status === 404
+          ? Alert.alert('Invalid credentials')
+          : Alert.alert('Login Failed', data.message);
       }
     } catch (error) {
       console.log('Login error', error.message);

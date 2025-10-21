@@ -1,5 +1,5 @@
-import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
+import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { useNavigation } from 'expo-router';
 import {
   Image,
   ScrollView,
@@ -7,154 +7,111 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function request() {
+export default function Request() {
   const navigation = useNavigation();
 
-  const handleAccept = () => {
-    // Handle the accept logic here
-    console.log("Accepted!");
-  };
-
-  const handleReject = () => {
-    // Handle the reject logic here
-    console.log("Rejected!");
-  };
-
   return (
-    <View style={{ flex: 1, backgroundColor: "#04432c" }}>
-      <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
+    <View style={{ flex: 1, backgroundColor: '#04432c' }}>
+      <SafeAreaView
+        style={{ flex: 1 }}
+        edges={['top', 'left', 'right']}>
+        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            style={styles.leftArrow}
-          >
-            <Ionicons name="arrow-back" size={24} color="#ddd" />
+            style={styles.leftArrow}>
+            <Ionicons
+              name="arrow-back"
+              size={22}
+              color="#d1f5e1"
+            />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Pickup History</Text>
+          <Text style={styles.headerTitle}>Pickup Request</Text>
         </View>
+
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={styles.scrollContent}
-        >
+          style={styles.scrollContent}>
           <View style={styles.mainContainer}>
-            <View style={{ marginTop: 10 }}>
-              <Text style={styles.subHeaderText}>Request Details</Text>
-            </View>
-            <View style={styles.detailsContent}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  columnGap: 16,
-                }}
-              >
+            {/* Request Details */}
+            <Text style={styles.sectionTitle}>Request Details</Text>
+            <View style={styles.detailsCard}>
+              {[
+                {
+                  icon: (
+                    <AntDesign
+                      name="enviromento"
+                      size={22}
+                      color="#04432c"
+                    />
+                  ),
+                  title: 'Address',
+                  info: 'Opposite KST, Mini-Okoro',
+                },
+                {
+                  icon: (
+                    <Ionicons
+                      name="call"
+                      size={22}
+                      color="#04432c"
+                    />
+                  ),
+                  title: 'Contact',
+                  info: '+234 9012345678',
+                },
+                {
+                  icon: (
+                    <FontAwesome5
+                      name="recycle"
+                      size={22}
+                      color="#04432c"
+                    />
+                  ),
+                  title: 'Waste Type',
+                  info: 'Plastic bottles, paper, cardboard',
+                },
+              ].map((item, index) => (
                 <View
-                  style={{
-                    backgroundColor: "#ddd",
-                    padding: 8,
-                    borderRadius: 4,
-                  }}
-                >
-                  <AntDesign name="enviromento" size={24} color="#333" />
+                  key={index}
+                  style={styles.detailRow}>
+                  <View style={styles.iconWrapper}>{item.icon}</View>
+                  <View>
+                    <Text style={styles.detailTitle}>{item.title}</Text>
+                    <Text style={styles.detailInfo}>{item.info}</Text>
+                  </View>
                 </View>
-                <View>
-                  <Text style={styles.requestTitle}>Address</Text>
-                  <Text style={styles.requestAddress}>
-                    Opposite KST, Mini-Okoro
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  columnGap: 16,
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor: "#ddd",
-                    padding: 8,
-                    borderRadius: 4,
-                  }}
-                >
-                  <Ionicons name="call" size={24} color="#333" />
-                </View>
-                <View>
-                  <Text style={styles.requestTitle}>Contact</Text>
-                  <Text style={styles.requestAddress}>+234 9012345678</Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  columnGap: 16,
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor: "#ddd",
-                    padding: 8,
-                    borderRadius: 4,
-                  }}
-                >
-                  <FontAwesome5 name="recycle" size={24} color="#333" />
-                </View>
-                <View>
-                  <Text style={styles.requestTitle}>Waste Type</Text>
-                  <Text style={styles.requestAddress}>
-                    Plastic bottles, paper, cardboard
-                  </Text>
-                </View>
-              </View>
+              ))}
             </View>
-            <View>
-              <Text style={styles.subHeaderText}>Waste Photos</Text>
-            </View>
-            <View style={styles.wastePhotosContent}>
-              <Image
-                source={require("../../../../assets/images/plastic-bottle.png")}
-                style={styles.wastePhotos}
-              />
-              <Image
-                source={require("../../../../assets/images/plastic-bottle.png")}
-                style={styles.wastePhotos}
-              />
-              <Image
-                source={require("../../../../assets/images/plastic-bottle.png")}
-                style={styles.wastePhotos}
-              />
-              <Image
-                source={require("../../../../assets/images/plastic-bottle.png")}
-                style={styles.wastePhotos}
-              />
+
+            {/* Waste Photos */}
+            <Text style={styles.sectionTitle}>Waste Photos</Text>
+            <View style={styles.wastePhotosContainer}>
+              {[1, 2, 3, 4].map((i) => (
+                <Image
+                  key={i}
+                  source={require('../../../../assets/images/plastic-bottle.png')}
+                  style={styles.wastePhoto}
+                />
+              ))}
             </View>
           </View>
         </ScrollView>
-        <View style={styles.actionButtonContainer}>
+
+        {/* Action Buttons */}
+        <View style={styles.actionBar}>
           <TouchableOpacity
-            style={[
-              styles.actionButton,
-              {
-                backgroundColor: "red",
-              },
-            ]}
-          >
-            <Text style={{ color: "#fff" }}>Reject</Text>
+            activeOpacity={0.8}
+            style={[styles.actionButton, styles.rejectButton]}>
+            <Text style={styles.buttonText}>Reject</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
-            style={[
-              styles.actionButton,
-              {
-                backgroundColor: "#0f7f0f",
-              },
-            ]}
-          >
-            <Text style={{ color: "#fff" }}>Accept</Text>
+            activeOpacity={0.8}
+            style={[styles.actionButton, styles.acceptButton]}>
+            <Text style={styles.buttonText}>Accept</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -164,71 +121,105 @@ export default function request() {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 40,
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 48,
+    justifyContent: 'center',
     paddingHorizontal: 16,
+    borderBottomWidth: 0.3,
+    borderBottomColor: 'rgba(255,255,255,0.15)',
   },
   headerTitle: {
-    color: "#ddd",
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
   },
   leftArrow: {
-    position: "absolute",
-    left: 20,
+    position: 'absolute',
+    left: 16,
+    padding: 4,
   },
   mainContainer: {
     paddingHorizontal: 20,
-    marginTop: 10,
-    flex: 1,
+    marginTop: 16,
   },
-  scrollContent: {
-    flex: 1,
+  sectionTitle: {
+    color: '#d1f5e1',
+    fontSize: 17,
+    fontWeight: '700',
+    marginBottom: 10,
   },
-  subHeaderText: {
-    color: "#ddd",
-    lineHeight: 23,
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  detailsContent: {
-    marginVertical: 20,
-    gap: 10,
-  },
-  requestTitle: {
-    color: "#ddd",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  requestAddress: {
-    fontSize: 14,
-    color: "#0f7f0f",
-  },
-  wastePhotosContent: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginTop: 10,
+  detailsCard: {
+    backgroundColor: '#0a5c42',
+    borderRadius: 14,
+    padding: 14,
     marginBottom: 20,
+    gap: 14,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
   },
-  wastePhotos: {
-    width: "48%",
-    resizeMode: "contain",
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    columnGap: 14,
   },
-  actionButtonContainer: {
+  iconWrapper: {
+    backgroundColor: '#d1f5e1',
+    padding: 10,
+    borderRadius: 10,
+  },
+  detailTitle: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 15,
+  },
+  detailInfo: {
+    color: '#9fd7b3',
+    fontSize: 14,
+    marginTop: 2,
+  },
+  wastePhotosContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    rowGap: 12,
+    marginBottom: 80,
+  },
+  wastePhoto: {
+    width: '48%',
+    height: 140,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    resizeMode: 'cover',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 1 },
+  },
+  actionBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginHorizontal: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: 10,
-    marginTop: "auto",
+    marginBottom: 14,
+    gap: 12,
   },
   actionButton: {
-    paddingHorizontal: 20,
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 14,
     borderRadius: 50,
-    alignItems: "center",
-    paddingVertical: 10,
+  },
+  rejectButton: {
+    backgroundColor: '#d9534f',
+  },
+  acceptButton: {
+    backgroundColor: '#0f7f0f',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 16,
   },
 });

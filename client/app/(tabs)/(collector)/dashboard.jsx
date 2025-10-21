@@ -18,7 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function CollectorDashboard() {
   const router = useRouter();
 
-  // TODO: replace with real data from your backend
+  // Sample data
   const metrics = {
     pending: 15,
     completed: 1120,
@@ -62,27 +62,25 @@ export default function CollectorDashboard() {
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.headerTitle}>Welcome back,</Text>
+            <Text style={styles.headerSub}>Welcome back,</Text>
             <Text style={styles.headerName}>Jika Mana</Text>
           </View>
 
           <View style={styles.headerRight}>
             <TouchableOpacity
               onPress={() => router.push('/(tabs)/(collector)/notifications')}
-              accessibilityLabel="Notifications"
               style={styles.iconButton}>
               <FontAwesome6
                 name="bell"
                 size={20}
-                color="#ddd"
+                color="#fff"
               />
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() =>
                 router.push('/(tabs)/(collector)/collectorProfile')
-              }
-              accessibilityLabel="Open profile">
+              }>
               <Image
                 source={require('../../../assets/images/icon.jpg')}
                 style={styles.avatar}
@@ -96,22 +94,28 @@ export default function CollectorDashboard() {
           contentContainerStyle={styles.scrollContent}>
           {/* Metrics */}
           <View style={styles.metricsRow}>
-            <View style={[styles.metricCard, styles.metricCardLeft]}>
+            <View style={[styles.metricCard, { backgroundColor: '#085a3c' }]}>
               <Text style={styles.metricLabel}>Pending</Text>
               <Text style={styles.metricValue}>{metrics.pending}</Text>
               <Text style={styles.metricSmall}>Priority</Text>
             </View>
 
-            <View style={[styles.metricCard, styles.metricCardMiddle]}>
+            <View style={[styles.metricCard, { backgroundColor: '#0a6b46' }]}>
               <Text style={styles.metricLabel}>Completed</Text>
               <Text style={styles.metricValue}>{metrics.completed}</Text>
               <Text style={styles.metricSmall}>This month</Text>
             </View>
 
-            <View style={[styles.metricCard, styles.metricCardRight]}>
-              <Text style={styles.metricLabel}>Earnings</Text>
-              <Text style={styles.metricValue}>{metrics.earnings}</Text>
-              <Text style={styles.metricSmall}>Balance</Text>
+            <View style={[styles.metricCard, { backgroundColor: '#1db954' }]}>
+              <Text style={[styles.metricLabel, { color: '#04432c' }]}>
+                Earnings
+              </Text>
+              <Text style={[styles.metricValue, { color: '#04432c' }]}>
+                {metrics.earnings}
+              </Text>
+              <Text style={[styles.metricSmall, { color: '#04432c' }]}>
+                Balance
+              </Text>
             </View>
           </View>
 
@@ -119,18 +123,20 @@ export default function CollectorDashboard() {
           <Text style={styles.sectionTitle}>Quick Actions</Text>
           <View style={styles.actionsRow}>
             <TouchableOpacity
-              style={styles.actionBtn}
+              style={[styles.actionBtn, { backgroundColor: '#1db954' }]}
               onPress={() => router.push('/(tabs)/(collector)/request')}>
               <MaterialCommunityIcons
                 name="format-list-bulleted"
                 size={22}
-                color="#fff"
+                color="#04432c"
               />
-              <Text style={styles.actionText}>Requests</Text>
+              <Text style={[styles.actionText, { color: '#04432c' }]}>
+                Requests
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.actionBtn}
+              style={[styles.actionBtn, { backgroundColor: '#0a6b46' }]}
               onPress={() => router.push('/(tabs)/(collector)/map')}>
               <Ionicons
                 name="location"
@@ -141,7 +147,7 @@ export default function CollectorDashboard() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.actionBtn}
+              style={[styles.actionBtn, { backgroundColor: '#085a3c' }]}
               onPress={() =>
                 router.push('/(tabs)/(collector)/dashboard-start')
               }>
@@ -157,23 +163,17 @@ export default function CollectorDashboard() {
           {/* Next Pickup */}
           <Text style={styles.sectionTitle}>Next Pickup</Text>
           <View style={styles.nextCard}>
-            <View style={styles.nextLeft}>
-              <View style={styles.nextBadge}>
-                <FontAwesome6
-                  name="truck"
-                  size={20}
-                  color="#04432c"
-                />
-              </View>
+            <View style={styles.nextBadge}>
+              <FontAwesome6
+                name="truck"
+                size={20}
+                color="#04432c"
+              />
             </View>
 
             <View style={styles.nextBody}>
               <Text style={styles.nextName}>{nextPickup.name}</Text>
-              <Text
-                style={styles.nextAddress}
-                numberOfLines={2}>
-                {nextPickup.address}
-              </Text>
+              <Text style={styles.nextAddress}>{nextPickup.address}</Text>
               <Text style={styles.nextMeta}>
                 {nextPickup.time} • {nextPickup.items}
               </Text>
@@ -232,6 +232,7 @@ export default function CollectorDashboard() {
 
 const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: '#04432c' },
+
   header: {
     paddingHorizontal: 20,
     paddingTop: 10,
@@ -240,11 +241,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  headerTitle: { color: '#ddd', fontSize: 12 },
+  headerSub: { color: '#a3d9b3', fontSize: 12 },
   headerName: { color: '#fff', fontSize: 18, fontWeight: '700' },
   headerRight: { flexDirection: 'row', alignItems: 'center' },
-  iconButton: { padding: 8, marginRight: 8 },
-  avatar: { width: 40, height: 40, borderRadius: 8 },
+  iconButton: {
+    padding: 8,
+    marginRight: 8,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 8,
+  },
+  avatar: { width: 40, height: 40, borderRadius: 10 },
 
   scrollContent: { paddingHorizontal: 20, paddingBottom: 20 },
 
@@ -255,32 +261,24 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     flex: 1,
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: 14,
+    padding: 14,
     marginHorizontal: 4,
-    backgroundColor: '#062a22',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
-  metricCardLeft: {
-    /* left */
-  },
-  metricCardMiddle: {
-    /* center */
-  },
-  metricCardRight: {
-    /* right */
-  },
-
-  metricLabel: { color: '#9fd7b3', fontSize: 12, fontWeight: '600' },
+  metricLabel: { color: '#b8e0c6', fontSize: 12, fontWeight: '600' },
   metricValue: { color: '#fff', fontSize: 20, fontWeight: '800', marginTop: 6 },
-  metricSmall: { color: '#9fd7b3', fontSize: 12, marginTop: 4 },
+  metricSmall: { color: '#b8e0c6', fontSize: 12, marginTop: 4 },
 
   sectionTitle: {
-    color: '#ddd',
+    color: '#fff',
     fontSize: 16,
     fontWeight: '700',
-    marginTop: 6,
-    marginBottom: 8,
+    marginTop: 8,
+    marginBottom: 10,
   },
 
   actionsRow: {
@@ -289,11 +287,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   actionBtn: {
-    backgroundColor: '#0f7f0f',
     flex: 1,
     marginHorizontal: 4,
     paddingVertical: 12,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
   },
   actionText: { color: '#fff', marginTop: 6, fontWeight: '700' },
@@ -301,11 +298,11 @@ const styles = StyleSheet.create({
   nextCard: {
     flexDirection: 'row',
     backgroundColor: '#062a22',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 14,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 16,
+    alignItems: 'center',
   },
-  nextLeft: { marginRight: 12 },
   nextBadge: {
     width: 52,
     height: 52,
@@ -313,6 +310,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 12,
   },
   nextBody: { flex: 1 },
   nextName: { color: '#fff', fontSize: 16, fontWeight: '700' },
@@ -326,8 +324,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginRight: 8,
   },
-  smallBtnPrimary: { backgroundColor: '#0f7f0f' },
-  smallBtnTextPrimary: { color: '#fff', fontWeight: '700' },
+  smallBtnPrimary: { backgroundColor: '#1db954' },
+  smallBtnTextPrimary: { color: '#04432c', fontWeight: '700' },
   smallBtnOutline: {
     borderWidth: 1,
     borderColor: '#9fd7b3',
@@ -339,20 +337,20 @@ const styles = StyleSheet.create({
   activityRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 2,
-    borderBottomColor: 'rgba(255,255,255,0.04)',
+    paddingVertical: 8,
+    borderBottomColor: 'rgba(255,255,255,0.08)',
     borderBottomWidth: 1,
   },
   activityIcon: {
-    width: 48,
-    height: 48,
+    width: 44,
+    height: 44,
     backgroundColor: '#fff',
-    borderRadius: 8,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   activityTitle: { color: '#fff', fontWeight: '700' },
-  activitySubtitle: { color: '#9fd7b3', marginTop: 4 },
-  activityTime: { color: '#9fd7b3', fontWeight: '700' },
+  activitySubtitle: { color: '#9fd7b3', marginTop: 3, fontSize: 13 },
+  activityTime: { color: '#9fd7b3', fontWeight: '600', fontSize: 12 },
 });

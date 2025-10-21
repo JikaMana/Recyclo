@@ -1,4 +1,8 @@
-// app/_layout.jsx
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import 'react-native-reanimated';
+import { PortalProvider } from '@gorhom/portal';
+
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -42,13 +46,13 @@ function RootLayoutContent() {
       }
     };
     checkAuthStatus();
-  }, []);
+  }, [updateAuthState]);
 
   if (!isReady) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator
-          size="large"
+          size="56"
           color="#2e7d32"
         />
       </View>
@@ -56,20 +60,24 @@ function RootLayoutContent() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={authState.isAuthorized}>
-        <Stack.Screen
-          name="(tabs)"
-          options={{ title: 'Tabs', headerShown: false }}
-        />
-      </Stack.Protected>
-      <Stack.Protected guard={!authState.isAuthorized}>
-        <Stack.Screen
-          name="(auth)"
-          options={{ title: 'Auth', headerShown: false }}
-        />
-      </Stack.Protected>
-    </Stack>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PortalProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Protected guard={authState.isAuthorized}>
+            <Stack.Screen
+              name="(tabs)"
+              options={{ title: 'Tabs', headerShown: false }}
+            />
+          </Stack.Protected>
+          <Stack.Protected guard={!authState.isAuthorized}>
+            <Stack.Screen
+              name="(auth)"
+              options={{ title: 'Auth', headerShown: false }}
+            />
+          </Stack.Protected>
+        </Stack>
+      </PortalProvider>
+    </GestureHandlerRootView>
   );
 }
 
@@ -80,3 +88,45 @@ export default function RootLayout() {
     </AuthProvider>
   );
 }
+
+// import React, { useCallback, useMemo, useRef } from 'react';
+// import { View, Text, StyleSheet } from 'react-native';
+// import { GestureHandlerRootView } from 'react-native-gesture-handler';
+// import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+
+// const App = () => {
+//   // ref
+//   const bottomSheetRef = useRef(null);
+
+//   // callbacks
+//   const handleSheetChanges = useCallback((index) => {
+//     console.log('handleSheetChanges', index);
+//   }, []);
+
+//   // renders
+//   return (
+//     <GestureHandlerRootView style={styles.container}>
+//       <BottomSheet
+//         ref={bottomSheetRef}
+//         onChange={handleSheetChanges}>
+//         <BottomSheetView style={styles.contentContainer}>
+//           <Text>Awesome 🎉</Text>
+//         </BottomSheetView>
+//       </BottomSheet>
+//     </GestureHandlerRootView>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: 'grey',
+//   },
+//   contentContainer: {
+//     flex: 1,
+//     padding: 36,
+//     alignItems: 'center',
+//   },
+// });
+
+// export default App;

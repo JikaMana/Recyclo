@@ -21,7 +21,6 @@ export default function Register() {
   const [password, setPassword] = useState();
 
   const handleRegister = async () => {
-    console.log(BASE_URL);
     try {
       const response = await fetch(`${BASE_URL}/api/auth/register/`, {
         method: 'POST',
@@ -41,12 +40,12 @@ export default function Register() {
         console.log('Registeration failed:', data.message);
         Alert.alert('Registeration Failed', data.message);
       }
-      console.log('passed here 4');
     } catch (error) {
       console.error('Network or server error:', error);
       Alert.alert('Error', 'Could not connect to the server.');
     }
   };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
