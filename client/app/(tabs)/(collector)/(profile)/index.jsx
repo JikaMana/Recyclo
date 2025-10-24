@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../../../contexts/AuthContext';
+import { useUser } from '../../../../contexts/UserContext';
 
 export default function CollectorProfile() {
   const router = useRouter();
   const { logout } = useAuth();
+  const { user, isLoading } = useUser();
 
   const subscriptionDetails = {
     plan: 'Monthly',
@@ -26,19 +28,6 @@ export default function CollectorProfile() {
       <SafeAreaView
         style={{ flex: 1 }}
         edges={['top', 'left', 'right']}>
-        {/* HEADER */}
-        <View style={styles.header}>
-          {/* <TouchableOpacity style={styles.menuIcon}>
-            <Ionicons
-              name="menu"
-              size={24}
-              color="#E6E6E6"
-            />
-          </TouchableOpacity> */}
-          <Text style={styles.headerTitle}>My Profile</Text>
-        </View>
-
-        {/* MAIN CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
@@ -49,8 +38,10 @@ export default function CollectorProfile() {
               size={100}
               color="#D1FADF"
             />
-            <Text style={styles.name}>Jika Mana</Text>
-            <Text style={styles.collectorId}>Collector ID: 08-G2H4V-2025</Text>
+            <Text style={styles.name}>{user?.name}</Text>
+            {/* <Text style={styles.collectorId}>Collector ID: 08-G2H4V-2025</Text> */}
+            <Text style={styles.collectorId}>Collector ID: {user?._id}</Text>
+            <Text style={styles.collectorId}>{user?.email}</Text>
 
             <TouchableOpacity
               style={styles.logoutBtn}

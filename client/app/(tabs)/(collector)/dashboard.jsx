@@ -3,9 +3,13 @@ import {
   MaterialCommunityIcons,
   FontAwesome6,
 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import {
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -14,23 +18,27 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useUser } from '../../../contexts/UserContext';
 
 export default function CollectorDashboard() {
   const router = useRouter();
+  const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+
+  const { user, isLoading } = useUser();
 
   // Sample data
   const metrics = {
     pending: 15,
     completed: 1120,
-    earnings: '₦45,200',
+    earnings: '4,520,000',
   };
 
   const nextPickup = {
     id: 'p-123',
-    name: 'Aisha Bello',
-    address: 'Garki II, Plot 24',
-    time: 'Today, 2:00 PM',
-    items: 'PET bottles (5 bags)',
+    name: 'Ibrahim ibn Manlawo ',
+    address: 'Abuad Mosque, MSSN Office',
+    time: 'Today, 2:25 PM',
+    items: 'CC nylon with pack',
   };
 
   const recent = [
@@ -63,7 +71,9 @@ export default function CollectorDashboard() {
         <View style={styles.header}>
           <View>
             <Text style={styles.headerSub}>Welcome back,</Text>
-            <Text style={styles.headerName}>Jika Mana</Text>
+            <Text style={styles.headerName}>
+              {user?.name || 'Recyclo User'}
+            </Text>
           </View>
 
           <View style={styles.headerRight}>
@@ -95,27 +105,36 @@ export default function CollectorDashboard() {
           {/* Metrics */}
           <View style={styles.metricsRow}>
             <View style={[styles.metricCard, { backgroundColor: '#085a3c' }]}>
+              <Ionicons
+                name="time-outline"
+                size={24}
+                color="#b8e0c6"
+              />
               <Text style={styles.metricLabel}>Pending</Text>
               <Text style={styles.metricValue}>{metrics.pending}</Text>
               <Text style={styles.metricSmall}>Priority</Text>
             </View>
 
             <View style={[styles.metricCard, { backgroundColor: '#0a6b46' }]}>
+              <Ionicons
+                name="checkmark-done-outline"
+                size={24}
+                color="#b8e0c6"
+              />
               <Text style={styles.metricLabel}>Completed</Text>
               <Text style={styles.metricValue}>{metrics.completed}</Text>
-              <Text style={styles.metricSmall}>This month</Text>
+              <Text style={styles.metricSmall}>This Month</Text>
             </View>
 
-            <View style={[styles.metricCard, { backgroundColor: '#1db954' }]}>
-              <Text style={[styles.metricLabel, { color: '#04432c' }]}>
-                Earnings
-              </Text>
-              <Text style={[styles.metricValue, { color: '#04432c' }]}>
-                {metrics.earnings}
-              </Text>
-              <Text style={[styles.metricSmall, { color: '#04432c' }]}>
-                Balance
-              </Text>
+            <View style={[styles.metricCard, { backgroundColor: '#085a3c' }]}>
+              <Ionicons
+                name="cash-outline"
+                size={24}
+                color="#b8e0c6"
+              />
+              <Text style={styles.metricLabel}>Earnings(₦)</Text>
+              <Text style={styles.metricValue}>{metrics.earnings}</Text>
+              <Text style={styles.metricSmall}>Balance</Text>
             </View>
           </View>
 
@@ -123,20 +142,18 @@ export default function CollectorDashboard() {
           <Text style={styles.sectionTitle}>Quick Actions</Text>
           <View style={styles.actionsRow}>
             <TouchableOpacity
-              style={[styles.actionBtn, { backgroundColor: '#1db954' }]}
+              style={[styles.actionBtn, { backgroundColor: '#0a6b46' }]}
               onPress={() => router.push('/(tabs)/(collector)/request')}>
               <MaterialCommunityIcons
                 name="format-list-bulleted"
                 size={22}
-                color="#04432c"
+                color="#fff"
               />
-              <Text style={[styles.actionText, { color: '#04432c' }]}>
-                Requests
-              </Text>
+              <Text style={styles.actionText}>Requests</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.actionBtn, { backgroundColor: '#0a6b46' }]}
+              style={[styles.actionBtn, { backgroundColor: '#085a3c' }]}
               onPress={() => router.push('/(tabs)/(collector)/map')}>
               <Ionicons
                 name="location"
@@ -147,7 +164,7 @@ export default function CollectorDashboard() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.actionBtn, { backgroundColor: '#085a3c' }]}
+              style={[styles.actionBtn, { backgroundColor: '#0a6b46' }]}
               onPress={() =>
                 router.push('/(tabs)/(collector)/dashboard-start')
               }>
@@ -188,7 +205,11 @@ export default function CollectorDashboard() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.smallBtn, styles.smallBtnPrimary]}
+                  style={[
+                    styles.smallBtn,
+                    styles.smallBtnPrimary,
+                    { backgroundColor: '#085a3c' },
+                  ]}
                   onPress={() =>
                     router.push(
                       `/(tabs)/(collector)/location?pickupId=${nextPickup.id}`
@@ -257,21 +278,43 @@ const styles = StyleSheet.create({
   metricsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 18,
   },
+
   metricCard: {
     flex: 1,
-    borderRadius: 14,
-    padding: 14,
-    marginHorizontal: 4,
+    borderRadius: 18,
+    paddingVertical: 16,
+    marginHorizontal: 5,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  metricLabel: { color: '#b8e0c6', fontSize: 12, fontWeight: '600' },
-  metricValue: { color: '#fff', fontSize: 20, fontWeight: '800', marginTop: 6 },
-  metricSmall: { color: '#b8e0c6', fontSize: 12, marginTop: 4 },
+
+  metricLabel: {
+    color: '#b8e0c6',
+    fontSize: 13,
+    fontWeight: '600',
+    marginTop: 6,
+    letterSpacing: 0.3,
+  },
+
+  metricValue: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '800',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+
+  metricSmall: {
+    color: '#b8e0c6',
+    fontSize: 11,
+    marginTop: 2,
+    opacity: 0.8,
+  },
 
   sectionTitle: {
     color: '#fff',
@@ -293,7 +336,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
   },
-  actionText: { color: '#fff', marginTop: 6, fontWeight: '700' },
+  actionText: { color: '#b8e0c6', marginTop: 6, fontWeight: '700' },
 
   nextCard: {
     flexDirection: 'row',
@@ -325,7 +368,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   smallBtnPrimary: { backgroundColor: '#1db954' },
-  smallBtnTextPrimary: { color: '#04432c', fontWeight: '700' },
+  smallBtnTextPrimary: { color: '#b8e0c6', fontWeight: '700' },
   smallBtnOutline: {
     borderWidth: 1,
     borderColor: '#9fd7b3',

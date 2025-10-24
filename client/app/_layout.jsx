@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { jwtDecode } from 'jwt-decode';
 import { ActivityIndicator, View } from 'react-native';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
+import { PickupProvider } from '../contexts/PickupContext';
+import { UserProvider } from '../contexts/UserContext';
 
 function RootLayoutContent() {
   const { authState, updateAuthState } = useAuth();
@@ -84,7 +86,11 @@ function RootLayoutContent() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootLayoutContent />
+      <UserProvider>
+        <PickupProvider>
+          <RootLayoutContent />
+        </PickupProvider>
+      </UserProvider>
     </AuthProvider>
   );
 }

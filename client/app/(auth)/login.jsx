@@ -1,4 +1,4 @@
-import { Link, useRouter } from 'expo-router';
+import { Link } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Alert,

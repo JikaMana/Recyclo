@@ -12,59 +12,15 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-// import { logout } from '../../../utils/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../../contexts/AuthContext';
+import { useUser } from '../../../contexts/UserContext';
 
 export default function UserProfile() {
   const router = useRouter();
   const { logout } = useAuth();
-  const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
-
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = await AsyncStorage.getItem('userToken');
-
-        if (!token) {
-          // console.error('No token found in storage.');
-          // Redirect to login if no token is found
-          router.replace('/(auth)/login');
-          setIsLoading(false);
-          return;
-        }
-
-        const response = await fetch(`${BASE_URL}/api/users/profile/`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          setUser(data.user);
-        } else {
-          console.error('Failed to fetch user profile:', response.status);
-          if (response.status === 401 || response.status === 403) {
-            // Invalidate the token and force re-login
-            await AsyncStorage.removeItem('userToken');
-            router.replace('/(auth)/login');
-          }
-        }
-      } catch (error) {
-        console.error('Network or server error:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProfile();
-  }, []);
+  // const [user, setUser] = useState(null);
+  const { user, isLoading } = useUser();
 
   const profileOptions = [
     {
@@ -124,44 +80,13 @@ export default function UserProfile() {
       />
     </TouchableOpacity>
   );
-
-  if (isLoading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator
-          size="large"
-          color="#1e90ff"
-        />
-        <Text style={styles.loadingText}>Loading your profile...</Text>
-      </View>
-    );
-  }
-
-  if (!user) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Could not load your profile</Text>
-        <Text style={styles.errorMessage}>
-          Please log in again to continue.
-        </Text>
-        <TouchableOpacity
-          onPress={logout}
-          style={styles.retryButton}>
-          <Text style={styles.retryText}>Log in again</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   return (
     <View style={{ flex: 1, backgroundColor: '#04432c' }}>
       <SafeAreaView
         style={{ flex: 1 }}
         edges={['top', 'left', 'right']}>
         <View style={styles.header}>
-          <TouchableOpacity
-            // onPress={() => navigation.goBack()}
-            style={styles.leftArrow}>
+          <TouchableOpacity style={styles.leftArrow}>
             <Ionicons
               name="arrow-back"
               size={24}
@@ -170,6 +95,7 @@ export default function UserProfile() {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>My Profile</Text>
         </View>
+
         <View style={styles.mainContainer}>
           <FlatList
             data={profileOptions}
@@ -179,25 +105,67 @@ export default function UserProfile() {
             showsVerticalScrollIndicator={false}
             ListHeaderComponent={() => (
               <View style={{ alignItems: 'center', marginBottom: 20 }}>
-                <View style={styles.profilePhotoContainer}>
-                  <Image
-                    source={require('../../../assets/images/icon.jpg')}
-                    style={styles.profilePhoto}
-                  />
-                </View>
-                <Text
-                  style={{
-                    fontSize: 22,
-                    fontWeight: 'bold',
-                    lineHeight: 28,
-                    color: '#ddd',
-                    marginTop: 10,
-                  }}>
-                  {user.name}
-                </Text>
-                <Text style={{ fontSize: 14, color: '#0f7f0f' }}>
-                  {user.email}
-                </Text>
+                {/* 🟢 PROFILE AREA */}
+                {isLoading ? (
+                  <View style={{ alignItems: 'center', marginVertical: 30 }}>
+                    <ActivityIndicator
+                      size="large"
+                      color="#0f7f0f"
+                    />
+                    <Text
+                      style={{
+                        color: '#ccc',
+                        marginTop: 8,
+                        fontSize: 15,
+                      }}>
+                      Fetching your profile...
+                    </Text>
+                  </View>
+                ) : user ? (
+                  <>
+                    <View style={styles.profilePhotoContainer}>
+                      <Image
+                        source={require('../../../assets/images/icon.jpg')}
+                        style={styles.profilePhoto}
+                      />
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 22,
+                        fontWeight: 'bold',
+                        lineHeight: 28,
+                        color: '#ddd',
+                        marginTop: 10,
+                      }}>
+                      {user.name}
+                    </Text>
+                    <Text style={{ fontSize: 14, color: '#0f7f0f' }}>
+                      {user.email}
+                    </Text>
+                  </>
+                ) : (
+                  <View style={{ alignItems: 'center', marginVertical: 20 }}>
+                    <Ionicons
+                      name="alert-circle-outline"
+                      size={40}
+                      color="#fff"
+                    />
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontSize: 18,
+                        fontWeight: '600',
+                        marginTop: 8,
+                      }}>
+                      Not logged in
+                    </Text>
+                    <TouchableOpacity
+                      onPress={logout}
+                      style={[styles.primaryButton, { marginTop: 15 }]}>
+                      <Text style={styles.primaryButtonText}>Log in again</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
             )}
           />
@@ -269,10 +237,10 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   errorTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#222',
-    marginBottom: 4,
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 10,
   },
   errorMessage: {
     color: '#777',
@@ -288,5 +256,43 @@ const styles = StyleSheet.create({
   retryText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#04432c',
+  },
+  loadingMessage: {
+    color: '#ddd',
+    marginTop: 12,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#04432c',
+    paddingHorizontal: 24,
+  },
+  errorSubtitle: {
+    color: '#ccc',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 6,
+    marginBottom: 20,
+  },
+  primaryButton: {
+    backgroundColor: '#0f7f0f',
+    paddingVertical: 12,
+    paddingHorizontal: 26,
+    borderRadius: 10,
+    elevation: 2,
+  },
+  primaryButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });

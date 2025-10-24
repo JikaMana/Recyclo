@@ -1,5 +1,6 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
@@ -8,64 +9,54 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ThemedTextInput from '../../../components/ThemedTextInput';
+import { useState } from 'react';
+import { usePickup } from '../../../contexts/PickupContext';
 
 export default function History() {
-  const pickupRequests = [
-    {
-      id: '12345',
-      materialType: 'Plastic Bottles',
-      status: 'Completed',
-      date: 'Oct 25, 2025',
-    },
-    {
-      id: '67890',
-      materialType: 'Cardboard Boxes',
-      status: 'Pending',
-      date: 'Oct 23, 2025',
-    },
-    {
-      id: '24680',
-      materialType: 'Aluminium Cans',
-      status: 'Completed',
-      date: 'Oct 20, 2025',
-    },
-    {
-      id: '13579',
-      materialType: 'Glass Bottles',
-      status: 'Cancelled',
-      date: 'Oct 18, 2025',
-    },
-    {
-      id: '123453',
-      materialType: 'Newspapers',
-      status: 'Completed',
-      date: 'Oct 15, 2025',
-    },
-    {
-      id: '678903',
-      materialType: 'Mixed Paper',
-      status: 'Pending',
-      date: 'Oct 12, 2025',
-    },
-  ];
+  const { pickupRequests, isLoading } = usePickup();
+  const [selectedFilter, setSelectedFilter] = useState('All');
+
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  const filteredRequests =
+    selectedFilter === 'All'
+      ? pickupRequests
+      : pickupRequests.filter(
+          (item) => item.status.toLowerCase() === selectedFilter.toLowerCase()
+        );
 
   const renderItem = ({ item }) => {
+    const capitalizedStatus =
+      item.status.charAt(0).toUpperCase() + item.status.slice(1);
+
     let statusStyle;
-    if (item.status === 'Completed') statusStyle = styles.completedStatus;
-    else if (item.status === 'Pending') statusStyle = styles.pendingStatus;
-    else if (item.status === 'Cancelled') statusStyle = styles.cancelledStatus;
+    if (item.status === 'completed') statusStyle = styles.completedStatus;
+    else if (item.status === 'pending') statusStyle = styles.pendingStatus;
+    else if (item.status === 'cancelled') statusStyle = styles.cancelledStatus;
 
     return (
       <TouchableOpacity
-        key={item.id}
+        key={item._id}
         style={styles.requestItem}
-        onPress={() => console.log(`Tapped on request ${item.id}`)}>
+        onPress={() => console.log(`Tapped on request ${item._id}`)}>
         <View style={styles.requestContent}>
-          <Text style={styles.requestTitle}>{item.materialType}</Text>
-          <Text style={styles.requestDate}>{item.date}</Text>
+          <Text style={styles.requestTitle}>
+            {item.selectedTypes?.join(', ') || 'No materials'}
+          </Text>
+          <Text style={styles.requestDate}>{formatDate(item.createdAt)}</Text>
+          <Text style={styles.requestAddress}>{item.address}</Text>
         </View>
         <View style={styles.statusBadgeContainer}>
-          <Text style={[styles.statusBadge, statusStyle]}>{item.status}</Text>
+          <Text style={[styles.statusBadge, statusStyle]}>
+            {capitalizedStatus}
+          </Text>
           <AntDesign
             name="right"
             size={16}
@@ -110,27 +101,45 @@ export default function History() {
           </View>
 
           <View style={styles.filterContainer}>
-            <TouchableOpacity
-              style={[styles.filterButton, styles.activeFilter]}>
-              <Text style={[styles.filterText, { color: '#fff' }]}>All</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.filterButton}>
-              <Text style={styles.filterText}>Completed</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.filterButton}>
-              <Text style={styles.filterText}>Pending</Text>
-            </TouchableOpacity>
+            {['All', 'Completed', 'Pending'].map((filter) => (
+              <TouchableOpacity
+                key={filter}
+                onPress={() => setSelectedFilter(filter)}
+                style={[
+                  styles.filterButton,
+                  selectedFilter === filter && styles.activeFilter,
+                ]}>
+                <Text
+                  style={[
+                    styles.filterText,
+                    selectedFilter === filter && { color: '#fff' },
+                  ]}>
+                  {filter}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
         {/* List */}
         <View style={styles.listContainer}>
-          <FlatList
-            data={pickupRequests}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-          />
+          {isLoading ? (
+            <ActivityIndicator
+              size="large"
+              color="#1db954"
+            />
+          ) : pickupRequests.length === 0 ? (
+            <Text style={{ color: '#ccc', textAlign: 'center', marginTop: 20 }}>
+              No pickup requests found.
+            </Text>
+          ) : (
+            <FlatList
+              data={filteredRequests}
+              renderItem={renderItem}
+              keyExtractor={(item) => item._id}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
         </View>
       </SafeAreaView>
     </View>
@@ -169,7 +178,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderColor: '#0a6b46',
     borderWidth: 1.3,
-    color: '#eee',
+    color: '#eeeeee',
     backgroundColor: 'rgba(255,255,255,0.05)',
     fontSize: 14,
     paddingVertical: 10,
@@ -197,10 +206,12 @@ const styles = StyleSheet.create({
   },
   activeFilter: {
     backgroundColor: '#1db954',
+    borderColor: '#1db954',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.25,
     shadowRadius: 3,
+    elevation: 2,
   },
   filterText: {
     color: '#ddd',
@@ -222,6 +233,7 @@ const styles = StyleSheet.create({
   },
   requestContent: {
     flexDirection: 'column',
+    maxWidth: '70%',
   },
   requestTitle: {
     color: '#fff',
@@ -253,5 +265,11 @@ const styles = StyleSheet.create({
   },
   cancelledStatus: {
     backgroundColor: '#f84f4f',
+  },
+  requestAddress: {
+    fontSize: 12,
+    marginTop: 3,
+    color: '#888',
+    flexWrap: 'w',
   },
 });

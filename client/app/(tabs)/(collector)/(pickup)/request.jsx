@@ -89,31 +89,27 @@ export default function Request() {
             {/* Waste Photos */}
             <Text style={styles.sectionTitle}>Waste Photos</Text>
             <View style={styles.wastePhotosContainer}>
-              {[1, 2, 3, 4].map((i) => (
-                <Image
-                  key={i}
-                  source={require('../../../../assets/images/plastic-bottle.png')}
-                  style={styles.wastePhoto}
-                />
-              ))}
+              <Image
+                source={require('../../../../assets/images/plastic-bottle.png')}
+                style={styles.wastePhoto}
+              />
             </View>
           </View>
+          {/* Action Buttons */}
+          <View style={styles.actionBar}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={[styles.actionButton, styles.rejectButton]}>
+              <Text style={styles.buttonText}>Reject</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={[styles.actionButton, styles.acceptButton]}>
+              <Text style={styles.buttonText}>Accept</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
-
-        {/* Action Buttons */}
-        <View style={styles.actionBar}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={[styles.actionButton, styles.rejectButton]}>
-            <Text style={styles.buttonText}>Reject</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={[styles.actionButton, styles.acceptButton]}>
-            <Text style={styles.buttonText}>Accept</Text>
-          </TouchableOpacity>
-        </View>
       </SafeAreaView>
     </View>
   );
@@ -188,8 +184,8 @@ const styles = StyleSheet.create({
     marginBottom: 80,
   },
   wastePhoto: {
-    width: '48%',
-    height: 140,
+    width: '100%',
+    height: 300,
     borderRadius: 10,
     backgroundColor: '#fff',
     resizeMode: 'cover',

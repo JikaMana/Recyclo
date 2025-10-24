@@ -143,4 +143,5 @@ MIT
 
 ## Author
 
-Jika Mana
+Codefloxx Technologies
+Yahaya Abdullahi Mana(Jika Mana)

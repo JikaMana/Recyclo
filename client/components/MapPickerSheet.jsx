@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 const MapPickerSheet = ({ sheetRef, onConfirm }) => {
+  const mapRef = useRef(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [initialRegion, setInitialRegion] = useState({
     latitude: 7.6233, // Afe Babalola University
@@ -19,13 +20,25 @@ const MapPickerSheet = ({ sheetRef, onConfirm }) => {
     try {
       (async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') return;
+        if (status !== 'granted') {
+          console.warn('Permission to access location was denied');
+          return;
+        }
+
         const loc = await Location.getCurrentPositionAsync({});
-        setInitialRegion({
+        const currentRegion = {
           latitude: loc.coords.latitude,
           longitude: loc.coords.longitude,
           latitudeDelta: 0.004,
           longitudeDelta: 0.004,
+        };
+        setInitialRegion(currentRegion);
+
+        mapRef.current?.animateToRegion(currentRegion, 1000);
+
+        setSelectedLocation({
+          latitude: loc.coords.latitude,
+          longitude: loc.coords.longitude,
         });
       })();
     } catch (err) {
@@ -77,6 +90,7 @@ const MapPickerSheet = ({ sheetRef, onConfirm }) => {
         {/* Map Section */}
         <View style={styles.mapContainer}>
           <MapView
+            ref={mapRef}
             style={styles.map}
             initialRegion={initialRegion}
             onPress={handleMapPress}>

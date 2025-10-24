@@ -17,6 +17,7 @@ import { Portal } from '@gorhom/portal';
 
 import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
+import { useUser } from '../../../contexts/UserContext';
 
 const ALL_RECYCLABLES = [
   'Plastic',
@@ -33,11 +34,13 @@ const ALL_RECYCLABLES = [
 
 export default function Pickup() {
   const navigation = useNavigation();
-
+  const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+  const { user } = useUser();
   const sheetRef = useRef(null);
 
   const [image, setImage] = useState(null);
   const [address, setAddress] = useState('');
+  const [location, setLocation] = useState('');
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -61,11 +64,25 @@ export default function Pickup() {
   };
 
   const handleMapConfirm = async (coord) => {
+    console.log(coord);
+    setLocation(coord);
     if (coord) {
+      // Ask permission
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission denied',
+          'Location access is required to select location.'
+        );
+        return;
+      }
+
       const [place] = await Location.reverseGeocodeAsync(coord);
-      const addressText = `${place.name || ''}, ${place.city || ''}, ${
-        place.region || ''
-      }`;
+      console.log(place);
+      // const addressText = `${place.name || ''}, ${place.city || ''}, ${
+      //   place.region || ''
+      // }`;
+      const addressText = `${place.formattedAddress}`;
       setAddress(addressText);
       console.log('Selected location:', addressText);
     }
@@ -93,9 +110,10 @@ export default function Pickup() {
 
     // Launch image picker
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images, // only images    });
+      // mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsEditing: true, // allow cropping
-      aspect: [1, 1], // square aspect ratio
+      // aspect: [1, 1], // square aspect ratio
       quality: 1, // full quality
     });
 
@@ -140,21 +158,29 @@ export default function Pickup() {
   };
 
   const handleSubmit = async () => {
-    if (isDisabled) return;
+    if (isDisabled) {
+      Alert.alert('Fill all informations');
+      return;
+    }
 
     setIsLoading(true);
     try {
+      console.log('Line 167: ', user);
+      console.log('Line 168: ', user?._id);
       const requestData = {
+        user: user?._id,
         address,
         selectedTypes,
+        location,
         imageUrl: uploadedImageUrl || null,
-        createdAt: new Date().toISOString(),
       };
 
-      console.log('Pickup Request:', requestData);
-
-      // Example backend call
-      // await fetch(`${API_URL}/pickup`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) });
+      // backend call
+      await fetch(`${BASE_URL}/api/pickups/new-request/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData),
+      });
 
       Alert.alert('Request Submitted', 'Your pickup request has been sent.', [
         {
@@ -162,6 +188,13 @@ export default function Pickup() {
           onPress: () => navigation.navigate('history'),
         },
       ]);
+
+      setImage(null);
+      setAddress('');
+      setLocation('');
+      setUploadedImageUrl(null);
+      setSelectedTypes([]);
+
       navigation.goBack();
     } catch (err) {
       Alert.alert('Error', 'Something went wrong, please try again.');
@@ -230,10 +263,6 @@ export default function Pickup() {
               />
               <Text style={styles.mapButtonText}>Select on Map</Text>
             </TouchableOpacity>
-
-            {/* <Text style={{ color: '#ddd', marginTop: 10, textAlign: 'center' }}>
-              {address || 'No location selected yet'}
-            </Text> */}
 
             {/* Type of Recyclable */}
             <View>
